@@ -19,8 +19,13 @@ Set up Google Cloud (source https://raw.githubusercontent.com/googleapis/python-
 >3. [Enable the Google Cloud Translate API.](https://cloud.google.com/translate)
 >4. [Setup Authentication.](https://googleapis.dev/python/google-api-core/latest/auth.html)
 
+Store credentials in `account_key` directory.
+
 When running code, use google cloud account environment variables:
 
 ```shell
-TODO:
+export GOOGLE_APPLICATION_CREDENTIALS=./account_key/project-123.json
+python main.py
 ```
+
+You can put it into a shell script to make it simpler to launch the program.
