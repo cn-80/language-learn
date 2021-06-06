@@ -1,6 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 
+
+class Translation:
+    pass
+
+
 class Application(tk.Frame):
     LANGUAGES = (
         ('English', 'en'),
