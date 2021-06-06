@@ -31,6 +31,8 @@ Store credentials in `account_key` directory.
 When running code, setup the environment variables:
 
 ```shell
+export LANGUAGE_LEARN_OXFORD_APP_ID=012345678
+export LANGUAGE_LEARN_OXFORD_APP_KEY=111222333
 export LANGUAGE_LEARN_GOOGLE_PROJECT=projects/project-123
 export GOOGLE_APPLICATION_CREDENTIALS=./account_key/project-123.json
 python main.py
