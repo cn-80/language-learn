@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Shell script (customised)
+main.sh
+
 # Google Service Account key
 account_key/*.json
