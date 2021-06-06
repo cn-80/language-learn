@@ -6,7 +6,6 @@ from tkinter import ttk
 
 from google.cloud import translate
 
-
 class TranslationClient:
     def __init__(self):
         self.client = translate.TranslationServiceClient()
