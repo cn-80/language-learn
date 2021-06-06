@@ -36,4 +36,4 @@ export GOOGLE_APPLICATION_CREDENTIALS=./account_key/project-123.json
 python main.py
 ```
 
-You can put it into a shell script to make it simpler to launch the program. There is an example: [main.sh](./main.sh.example).
+You can put it into a shell script to make it simpler to launch the program. There is an example: [main.sh.example](./main.sh.example). Copy it to `main.sh` and update the environment variables to match what you need.
