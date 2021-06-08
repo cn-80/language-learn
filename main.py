@@ -1,5 +1,7 @@
+from collections import defaultdict
 import inspect
 import os
+import re
 
 import tkinter as tk
 from tkinter import ttk
@@ -29,45 +31,102 @@ class TranslationClient:
 
 
 class Application(tk.Frame):
+    # Supported languages: https://cloud.google.com/translate/docs/languages
     LANGUAGES = (
         ('English', 'en'),
         ('French', 'fr'),
+        # ('Chinese', 'zh'),
+        # ('Hindi', 'hi'),
+        # ('German', 'de'),
+        ('Italian', 'it'),
+        ('Portuguese', 'pt'),
     )
 
     def __init__(self, master=None):
         super().__init__(master)
         self.translation_client = TranslationClient()
-        print(self.translation_client.translate(['Hello and welcome to Language Learn', 'This is the second sentence', 'Good day and good afternoon'], 'en', ['fr', 'zh']))
+        self.src_lang = 'en'
+        self.dest_langs = [locale for (label, locale) in self.LANGUAGES if locale != self.src_lang]
+        self.src_lines = []
+        self.translated_lines = []
         self.master = master
         self.pack()
         self.create_widgets()
 
     def create_widgets(self):
-        self.src_lang_heading = ttk.Label(self, text='Source Language:')
+        self.language_select_frame = ttk.Frame(self)
+        self.src_lang_heading = ttk.Label(self.language_select_frame, text='Source Language:')
         self.src_lang_heading.pack(side='top')
         self.src_lang_options = []
         for (label, locale) in self.LANGUAGES:
-            lang_opt = ttk.Checkbutton(self, text=label)
+            lang_opt = ttk.Checkbutton(self.language_select_frame, text=label)
             lang_opt.pack(side='top')
             self.src_lang_options.append(lang_opt)
 
-        self.dest_lang_heading = ttk.Label(self, text='Languages to Learn:')
+        self.dest_lang_heading = ttk.Label(self.language_select_frame, text='Languages to Learn:')
         self.dest_lang_heading.pack(side='top')
         self.dest_lang_options = []
         for (label, locale) in self.LANGUAGES:
-            lang_opt = ttk.Checkbutton(self, text=label)
+            lang_opt = ttk.Checkbutton(self.language_select_frame, text=label)
             lang_opt.pack(side='top')
             self.src_lang_options.append(lang_opt)
+        self.language_select_frame.pack(side='left')
 
-        self.quit = ttk.Button(
+        self.lines_frame = ttk.Frame(self)
+        self.src_text = tk.Text(self.lines_frame)
+        self.src_text.insert('1.0', 'Hello, how are you? Would you like to learn a new language today? Press the "translate" button below to see translations for each sentence in different languages.')
+        self.src_text.pack(side='top')
+        self.translated_lines = []
+        self.translated_lines_frame = ttk.Frame(self.lines_frame)
+        self.translated_lines_frame.pack(side='bottom')
+        self.translate_button = ttk.Button(
+            self.lines_frame,
+            text='Translate',
+            command=self.translate
+        )
+        self.translate_button.pack(side='bottom')
+        self.lines_frame.pack(side='right')
+
+        self.quit_button = ttk.Button(
             self,
-            text='QUIT',
+            text='Quit',
             command=self.master.destroy
         )
-        self.quit.pack(side='bottom')
+        self.quit_button.pack(side='bottom')
 
-    def show_select_language_dialog(self):
-        pass
+    def translate(self):
+        self.src_lines = [
+            text for text in
+            [text.strip() for text in re.split(
+                '[\.\?\!]',
+                self.src_text.get('1.0', 'end-1c')
+            )] if len(text) > 0
+        ]
+        for widget in self.translated_lines:
+            widget.pack_forget()
+            widget.destroy()
+        response = self.translation_client.translate(
+            self.src_lines,
+            self.src_lang,
+            self.dest_langs
+        )
+        for index in range(len(self.src_lines)):
+            # Source Line
+            widget = ttk.Label(
+                self.translated_lines_frame,
+                text='<<{}>> {}'.format(self.src_lang, self.src_lines[index])
+            )
+            self.translated_lines.append(widget)
+            widget.pack(side='top')
+            # Translated Lines
+            for lang in self.dest_langs:
+                widget = ttk.Label(
+                    self.translated_lines_frame,
+                    text=f'<<{lang}>> {response[lang][index]}'
+                )
+                self.translated_lines.append(widget)
+                widget.pack(side='top')
+
 
 root = tk.Tk()
 app = Application(master=root)

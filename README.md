@@ -1,6 +1,8 @@
 # language-learn
 Learn new languages by seeing the side-by-side translations.
 
+![Language Learn](./language-learn.png)
+
 Virtualenv setup:
 
 ```shell
